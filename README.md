@@ -97,15 +97,120 @@ weight_log <- read_csv("/cloud/project/Fitabase Data 4.12.16-5.12.16/weightLogIn
 
 * quick glimpse of data: check for errors
 ```R
-head()
+head() => view first few rows
 colnames() 
 all.equal() => Equality Test Between Two Data Tables
 is.null() => inspect whether data object is null
 anyNA()
 ```
-  * inspect hourly data 
+
+  * inspect hourly data, daily data, sleep and weight data
+```R
+all.equal(select(daily_activity,Id,Calories),
+  select(daily_calories,Id,Calories), check.attributes=FALSE) #true
+all.equal(select(daily_activity,Id,SedentaryMinutes,LightlyActiveMinutes,FairlyActiveMinutes,VeryActiveMinutes,SedentaryActiveDistance,LightActiveDistance,ModeratelyActiveDistance,VeryActiveDistance),
+ select(daily_intensities,Id,SedentaryMinutes,LightlyActiveMinutes,FairlyActiveMinutes,VeryActiveMinutes,SedentaryActiveDistance,LightActiveDistance,ModeratelyActiveDistance,VeryActiveDistance), check.attributes=FALSE) #true
+
+#check types of each column
+typeof(attr(select(daily_activity,Id,Calories), "row.names")) == typeof(attr(select(daily_calories,Id,Calories), "row.names")) #true
+mode(attr(select(daily_activity,Id,Calories), "row.names")) #numeric
+mode(attr(select(daily_calories,Id,Calories), "row.names")) #numeric
+```
+
+* sort & filter data: merge datasets with similar column names
+```R
+#merge hourly data
+hourly_activity_1 <- merge(hourly_calories,hourly_intensities, by=c("Id","ActivityHour"))
+hourly_activity <- merge( hourly_activity_1 ,hourly_steps, by=c("Id","ActivityHour"))
+
+#merge daily data
+daily_activity_1 <- merge(daily_activity,daily_calories, by=c("Id","Calories"))
+daily_activity_2 <- merge(daily_activity_1, daily_intensities, by=c("Id","ActivityDay","SedentaryMinutes", "LightlyActiveMinutes","FairlyActiveMinutes","VeryActiveMinutes", "SedentaryActiveDistance", "LightActiveDistance", "ModeratelyActiveDistance", "VeryActiveDistance"))
+daily_activity_3 <- merge(daily_activity_2, daily_steps, by=c("Id","ActivityDay"))
+```
+
+* Now, we have 4 databases, I will standardise the date formats across these 4 databases
+1. hourly_activity
+2. daily_activity_3
+3. sleep_day
+4. weight_log
+
+```R
+1. hourly_activity ⇒ hourly_activity_final
+hourly_activity_final = 
+hourly_activity %>%
+	mutate(ActivityHour_2=ActivityHour) %>% #duplicate column
+	separate(ActivityHour_2,into=c("Date","Time","dayornight"),sep=' ') %>%
+	mutate("Day" = wday(as.Date(Date,format='%m/%d/%Y'), label=TRUE ))
+
+#check date column type
+mode(attr(select(hourly_activity_final,Date), "row.names")) #numeric
+
+#Add a day column 
+#wday(as.Date('4/15/2016',format='%m/%d/%Y'), label=TRUE) => Fri
+mutate("Day" = (wday(as.Date(Date,format='%m/%d/%Y'), label=TRUE )
 
 
+2. daily_activity_3 ⇒ daily_activity_final
+daily_activity_final = 
+daily_activity_3 %>%
+	select(-ActivityDay)%>%
+	select(-StepTotal)%>%
+	select(-TrackerDistance) %>%
+	rename(Date = ActivityDate)
+ 
+ 
+3. sleep_day ⇒ sleep_day_final
+sleep_day_final = 
+sleep_day %>%
+	separate(SleepDay,into=c("Date","Time","dayornight"),sep=' ')
+ 
+ 
+ 4. weight_log ⇒ weight_log_final
+weight_log_final = 
+weight_log %>%
+	separate(Date,into=c("Date","Time","dayornight"),sep=' ')
+```
+
+* Do further inspection of databases to delete duplicate rows 
+```R
+duplicated(sleep_day_final) #returns 3 true 
+
+sleep_day_final %>% distinct()
+
+unique(sleep_day_final) #same as
+distinct(sleep_day_final)
+
+sleep_day_final %>% 
+	filter(duplicated(sleep_day_final) == TRUE) #returns 3 results
+
+sleep_day_final %>% 
+	filter(Id == "4388161847") #verify duplicated 
+ 
+hourly_activity_final %>% 
+     filter(duplicated(hourly_activity_final) == TRUE) #no duplicates
+
+daily_activity_final %>% 
+     filter(duplicated(daily_activity_final) == TRUE) #no duplicates
+
+sleep_day_final=
+sleep_day_final %>% distinct() #remove the 3 duplicate rows
+
+weight_log_final %>% 
+     filter(duplicated(weight_log_final) == TRUE) #no duplicates
+```
+
+### 4. Analyse ###
+```R
+group_by() => before summarize() => group rows 
+summarize() => many rows into one
+
+geom_bar() => height of the bar proportional to the number of cases in each group (or if the weight aesthetic is supplied, the sum of the weights)
+geom_col() => height of the bars to represent values in the data
+geom_col() = geom_bar(stat = “identity”)
+```
+**1. bar graph: average calories VS day of the week**
+There are different no of dataset for each day, hence compute average instead of sum
 
 
 
