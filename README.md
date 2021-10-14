@@ -63,6 +63,22 @@ I will be using RStudio to perform the analysis and generate visualisations to i
 ```R
 install.packages() & library()
 ```
+```R
+tidyverse ⇒ collection of R packages, which includes:
+- ggplot2 ⇒ Data Visualisation
+- tidyr ⇒ Data Cleaning
+- readr ⇒ Importing Data
+- dplyr ⇒ Data manipulation with functions
+
+lubridate ⇒ Date transformations
+skimr ⇒ Summary statistics
+here ⇒ Easy file references
+janitor ⇒ Data Cleaning
+```
+
+
+
+
 
 
 
