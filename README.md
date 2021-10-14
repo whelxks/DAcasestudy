@@ -11,10 +11,9 @@
 * Business goals: Bellabeat aims to become a larger player in the global **smart device** market. By analyzing smart device fitness data, we could potentially unlock new growth opportunities for the company.
 
 ## Data analysis process (6 steps): ##
-```diff
-@@ 1. Ask @@
 
-```
+1. Ask
+
 * Identify the business task
 I have been asked to analyze smart device data (data collected on activity, sleep, stress, and reproductive health). 
 This helps me to gain insight into how consumers are using their smart devices (consumer's health status and habits) by making predictions and searching for trends and patterns.
@@ -29,6 +28,34 @@ Using this information, I will then craft high-level recommendations for how the
 
 I will be using the public data from [FitBit Fitness Tracker Data](https://www.kaggle.com/arashnic/fitbit). There are 15 csv files downloaded.
 
+* Identify how data is organised.
+
+Data is organised in both long and wide format.
+ * wide format: each user's response to each variable is in different columns.
+ * long format: each user is represented by many rows according to different date and time.
+
+* Determine the credibility of the data: ROCCC Analysis
+
+**Reliability: Not Reliable**
+- Low number of participants for survey (data collected from only 30 FitBit users, not representative population).
+- These 30 users may be from the same group/type, which means data is not randomised.
+
+**Original: Not Original**
+- The responses were collected based on a distributed survey via Amazon Mechanical Turk, which is a 3rd party provided.
+
+**Comprehensive: Not Comprehensive**
+- There is information about daily activity, steps, and heart rate of each respondent, but the background information of each respondent is not provided. Background information about the survey participants's age, gender and location are unknown. Most participants may not be female, hence the trends derived from this dataset may not apply to Bellabeat products, which targets females.
+- The FitBit product that is being analysed is also not provided, the 30 FitBit users may be using different FitBit products, which makes the data unreliable and not comparable for deriving trends. 
+- Since the FitBit product that is being analysed is also not provided, it is not confirmed that the FitBit products used by the participants have similar functionality to BellaBeat's products. The trends derived from this analysis, applied to BellaBeat's marketing strategy may not be effective. 
+
+**Current: Not Current**
+- The survey responses were collected between 03.12.2016-05.12.2016. The trends derived may be outdated and not representative in 2021.
+
+**Cited: Not Cited**
+- There is not enough information to determine if Amazon Mechanical Turk is a credible source.
+
+**Conclusion:** 
+- Would not use this dataset to advise for business decisions/directions. Instead, analysis using this dataset should be treated as a prediction/intuition of a trend. The trend should be further verified through a more reliable and credible dataset.
 
 
 ```diff
