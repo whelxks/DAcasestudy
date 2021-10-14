@@ -20,21 +20,19 @@ This helps me to gain insight into how consumers are using their smart devices (
 Using this information, I will then craft high-level recommendations for how these trends can be applied to Bellabeat's products, customers to make their marketing strategy more effective.
 
 * Consider Key Stakeholders
- * Primary Stakeholders: Urška Sršen (CEO of Bellabeats) & Sando Mur (co-founder of Bellabeats)
- * Secondary Stakeholder: Bellabeat marketing analytics team.
+  * Primary Stakeholders: Urška Sršen (CEO of Bellabeats) & Sando Mur (co-founder of Bellabeats)
+  * Secondary Stakeholder: Bellabeat marketing analytics team.
     
 
 2. Prepare 
 
 I will be using the public data from [FitBit Fitness Tracker Data](https://www.kaggle.com/arashnic/fitbit). There are 15 csv files downloaded.
 
-* Identify how data is organised.
-
 Data is organised in both long and wide format.
  * wide format: each user's response to each variable is in different columns.
  * long format: each user is represented by many rows according to different date and time.
 
-* Determine the credibility of the data: ROCCC Analysis
+Let's determine the credibility of the data through an ROCCC Analysis.
 
 **Reliability: Not Reliable**
 - Low number of participants for survey (data collected from only 30 FitBit users, not representative population).
