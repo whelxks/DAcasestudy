@@ -212,7 +212,8 @@ geom_col() = geom_bar(stat = “identity”)
 
 **1. bar graph: average calories VS day of the week**
 ![Screenshot%202021-09-09%20at%203 49 12%20PM](https://user-images.githubusercontent.com/70426064/137296780-fa902342-d0ce-4229-b9cb-b9e73210bf36.png)
-We can see that there are different no of dataset for each day, hence we compute average instead of sum.
+
+> We can see that there are different no of dataset for each day, hence we compute average instead of sum.
 ```R
 hourly_activity_final %>%
 group_by(Day, Id, Date) %>% #each user = one row for the whole day 
@@ -224,7 +225,7 @@ geom_col(mapping=aes(x=Day, y=,AverageCalories, fill=Day))+
 labs(title="Average Calories against Day of the week", x='Day of the week', y='Average calories')+
 geom_label(aes(x=Day,y=AverageCalories,label=as.integer(AverageCalories)))
 ```
-
+![image](https://user-images.githubusercontent.com/70426064/137297247-b144f63e-f293-4f7a-9fd3-5cb18ecae912.png)
 From this graph, there is no distinct outlier. We can interpret that users are more active and make more use of health gadgets on days except Thursday. 
 
 
