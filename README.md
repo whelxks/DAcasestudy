@@ -22,7 +22,8 @@ Using this information, I will then craft high-level recommendations for how the
 * Consider Key Stakeholders
   * Primary Stakeholders: Urška Sršen (CEO of Bellabeats) & Sando Mur (co-founder of Bellabeats)
   * Secondary Stakeholder: Bellabeat marketing analytics team.
-    
+  
+<br/>
 
 ### 2. Prepare ###
 
@@ -54,6 +55,8 @@ Let's determine the credibility of the data through an ROCCC Analysis.
 
 **Conclusion:** 
 - Would not use this dataset to advise for business decisions/directions. Instead, analysis using this dataset should be treated as a prediction/intuition of a trend. The trend should be further verified through a more reliable and credible dataset.
+
+<br/>
 
 ### 3. Process ###
 
@@ -199,6 +202,7 @@ sleep_day_final %>% distinct() #remove the 3 duplicate rows
 weight_log_final %>% 
      filter(duplicated(weight_log_final) == TRUE) #no duplicates
 ```
+<br/>
 
 ### 4. Analyse ###
 ```R
@@ -209,6 +213,7 @@ geom_bar() => height of the bar proportional to the number of cases in each grou
 geom_col() => height of the bars to represent values in the data
 geom_col() = geom_bar(stat = “identity”)
 ```
+<br/>
 
 ### **4a. bar graph: average calories VS day of the week** ###
 ![Screenshot%202021-09-09%20at%203 49 12%20PM](https://user-images.githubusercontent.com/70426064/137296780-fa902342-d0ce-4229-b9cb-b9e73210bf36.png)
@@ -231,9 +236,11 @@ geom_label(aes(x=Day,y=AverageCalories,label=as.integer(AverageCalories)))
 > From this graph, there is no distinct outlier. We can interpret that users are more active and make more use of health gadgets on days except Thursday. 
 
 
+<br/>
+
 ### **4b. line graph: average calories VS time of the day** ###
-![image](https://user-images.githubusercontent.com/70426064/137297997-3eae9f53-d8cb-4c61-b910-1a83b890564d.png)
 ![image](https://user-images.githubusercontent.com/70426064/137298055-b9582561-678d-406d-9c6d-838d205c075d.png)
+![image](https://user-images.githubusercontent.com/70426064/137297997-3eae9f53-d8cb-4c61-b910-1a83b890564d.png)
 
 We can see that there are different no of dataset for each hour in time, hence we compute average instead of sum.
 
@@ -265,6 +272,7 @@ labs(title="Average Calories against Time", x='Time of the Day (in 24hr)', y='Av
 
 > From this graph, we can see that users are most active from 5-7pm daily. Reminders on exercise should be targeted at this time.
 
+<br/>
 
 ### 4c. Boxplot: calories burned VS steps/distance taken ###
 * Hypothesis: More steps = More distance = More calories burned
@@ -293,7 +301,7 @@ ggplot(aes(x=steps,y=Calories,fill=steps)) +
 
 > When distance travelled is >5.2 miles, calories burned is higher when user takes less steps (<7406 steps), which proves our previous hypothesis wrong. This means that for the distance range of >5.2 miles, intensity of the steps, such as taking bigger strides matters more than the amount of steps. <br/><br/>Reminders should be set to encourage users to take bigger strides when walking to lose weight optimally.
 
-
+<br/>
 
 ### 4d. Line/Scatter plot: average sleep time VS percentage of sedentary time ###
 * Hypothesis: More healthy user type = More sleep
@@ -349,12 +357,12 @@ SleeperType = factor(case_when(
 ),levels=c("Bad Sleeper", "Normal Sleeper", "Over Sleeper")))
 ```
 
+![image](https://user-images.githubusercontent.com/70426064/137300922-5a4b9f2e-60bc-4a29-bded-8731bb9bf1a9.png)
+![image](https://user-images.githubusercontent.com/70426064/137300934-8a35cd23-4e77-418d-8155-9bd58647283e.png)
 
 
 
-
-
-In Graph Format,
+* In Graph Format,
 ```R
 daily_activity_sleep %>%
 group_by(Id) %>% 
@@ -380,6 +388,7 @@ geom_rect(aes(xmin = min(as.integer(PercentSedentary)),
 
 > Red boxes on this graph show under sleep (<420 mins) and over sleep (>480 mins) portions.<br/><br/>From this graph, we can deduce that individuals who are less sedentary (lower percentage of sedentary time) are in normal sleeping (≥=420mins & ≤480mins) range.<br/><br/>Reminders should encourage users to adhere to the normal sleeping range to attain a healthier lifestyle.
 
+<br/>
 
 ### 5. Share: Conclusions/Trends derived ###
 
@@ -388,7 +397,7 @@ geom_rect(aes(xmin = min(as.integer(PercentSedentary)),
 3. For the distance range of >5.2 miles, intensity of the steps, such as taking bigger strides matters more than the amount of steps. 
 4. Individuals who are less sedentary are in normal sleeping (≥=420mins & ≤480mins) range.
 
-
+<br/>
 
 ### 6. Act: Proposed Marketing Strategies ###
 
