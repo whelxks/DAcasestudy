@@ -231,13 +231,171 @@ geom_label(aes(x=Day,y=AverageCalories,label=as.integer(AverageCalories)))
 > From this graph, there is no distinct outlier. We can interpret that users are more active and make more use of health gadgets on days except Thursday. 
 
 
+### **4b. line graph: average calories VS time of the day** ###
+![image](https://user-images.githubusercontent.com/70426064/137297997-3eae9f53-d8cb-4c61-b910-1a83b890564d.png)
+![image](https://user-images.githubusercontent.com/70426064/137298055-b9582561-678d-406d-9c6d-838d205c075d.png)
 
+We can see that there are different no of dataset for each hour in time, hence we compute average instead of sum.
 
+```R
+#single value
+times = strptime("4/16/2016 10:00:00 PM", "%m/%d/%Y %I:%M:%S %p")
+times$hour #22
 
-```diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
+#create new time column
+ActivityHour_Time = 
+hourly_activity_final %>%
+pull(ActivityHour) %>%
+strptime(format= "%m/%d/%Y %I:%M:%S %p") %>%
+
+#extract only hours from new time column, as a new column in hourly_activity_final database
+hourly_activity_final$ActivityHour_Time <- format(as.POSIXct(ActivityHour_Time), format = "%H")
+
+hourly_activity_final %>%
+group_by(ActivityHour_Time) %>% 
+summarize(AverageCalories=mean(Calories)) %>% 
+ggplot()+
+geom_line(mapping=aes(x=ActivityHour_Time, y=,AverageCalories, group=1), color="purple")+
+labs(title="Average Calories against Time", x='Time of the Day (in 24hr)', y='Average Calories')+
+
+#geom_point(mapping=aes(x=ActivityHour_Time, y=,AverageCalories), color="purple")
+#geom_label(aes(x=ActivityHour_Time,y=AverageCalories,label=as.integer(AverageCalories))
 ```
+![image](https://user-images.githubusercontent.com/70426064/137298075-69a07dd9-842e-491a-b22e-d7e720a4feb8.png)
+
+> From this graph, we can see that users are most active from 5-7pm daily. Reminders on exercise should be targeted at this time.
+
+
+### 4c. Boxplot: calories burned VS steps/distance taken ###
+* Hypothesis: More steps = More distance = More calories burned
+
+```R
+#split cases according to median value from summary(daily_activity_final)
+
+daily_activity_final %>%
+summarise(
+distance = factor(case_when(
+    TotalDistance < 5.2 ~ "< 5.2 miles",
+    TotalDistance >= 5.2 ~ "> 5.2 miles",
+),levels = c("> 5.2 miles", "< 5.2 miles")),
+steps = factor(case_when(
+    TotalSteps < 7406 ~ "< 7406 Steps",
+    TotalSteps >= 7406 ~ "> 7406 Steps",
+),levels = c("> 7406 Steps", "< 7406 Steps")),
+Calories) %>%
+ggplot(aes(x=steps,y=Calories,fill=steps)) +
+    geom_boxplot() +
+    facet_wrap(~distance)+
+    labs(title="Calories burned by Steps and Distance",x=NULL) +
+    theme(legend.position="none")
+```
+![image](https://user-images.githubusercontent.com/70426064/137298107-fb5bc787-3353-471d-a838-718bc040a5d7.png)
+
+> When distance travelled is >5.2 miles, calories burned is higher when user takes less steps (<7406 steps), which proves our previous hypothesis wrong. This means that for the distance range of >5.2 miles, intensity of the steps, such as taking bigger strides matters more than the amount of steps. <br/><br/>Reminders should be set to encourage users to take bigger strides when walking to lose weight optimally.
+
+
+
+### 4d. Line/Scatter plot: average sleep time VS percentage of sedentary time ###
+* Hypothesis: More healthy user type = More sleep
+
+* Clean data tables again
+```R
+#merge daily_activity_final and sleep_day_final
+#keep all rows from both database => merge(all=TRUE)
+
+# %>% select(-SleepDay, -TrackerDistance) #this is to remove rows
+
+daily_activity_sleep <- 
+merge(daily_activity_final, sleep_day_final, by = c("Id", "Date"),all=TRUE) %>%
+drop_na() #diff user has diff no of rows (some days not logged)
+```
+
+* This is not an accurate method to split user types as output has many NA
+```R
+type = factor(case_when(
+    AverageSedentaryMinutes > 712.1695 & AverageLightlyActiveMinutes < 216.8547 & AverageFairlyActiveMinutes < 18.03874 & AverageActiveMinutes < 25.18886 ~ "Sedentary",
+    AverageSedentaryMinutes < 712.1695 & AverageLightlyActiveMinutes > 216.8547 & AverageFairlyActiveMinutes < 18.03874 & AverageActiveMinutes < 25.18886 ~ "Lightly Active",
+    AverageSedentaryMinutes < 712.1695 & AverageLightlyActiveMinutes < 216.8547 & AverageFairlyActiveMinutes > 18.03874 & AverageActiveMinutes < 25.18886 ~ "Fairly Active",
+    AverageSedentaryMinutes < 712.1695 & AverageLightlyActiveMinutes < 216.8547 & AverageFairlyActiveMinutes < 18.03874 & AverageActiveMinutes > 25.18886 ~ "Very Active",
+),levels=c("Sedentary", "Lightly Active", "Fairly Active", "Very Active")
+```
+
+* Instead, we split like this
+```R
+#summarise(count=n()) #24 users
+
+#sum for each user all the mins, then average
+daily_activity_sleep %>%
+group_by(Id) %>% 
+summarize(AverageActiveMinutes=mean(VeryActiveMinutes), 
+AverageFairlyActiveMinutes=mean(FairlyActiveMinutes),
+AverageLightlyActiveMinutes=mean(LightlyActiveMinutes),
+AverageSedentaryMinutes=mean(SedentaryMinutes),
+PercentSedentary=(AverageSedentaryMinutes/(AverageActiveMinutes+AverageFairlyActiveMinutes+AverageLightlyActiveMinutes+AverageSedentaryMinutes))*100)
+
+#According to research: 
+#undersleep <7 hrs:  <420 mins
+#normalsleep >=7 & <=8 hrs: >=420 & <=480 mins
+#oversleep >8 hrs: >480 mins
+
+daily_activity_sleep %>%
+group_by(Id) %>% 
+summarize(
+AverageSleepTime=mean(TotalMinutesAsleep),
+SleeperType = factor(case_when(
+    mean(TotalMinutesAsleep) < 420 ~ "Bad Sleeper",
+    mean(TotalMinutesAsleep) >= 420 & mean(TotalMinutesAsleep) <= 480 ~ "Normal Sleeper",
+    mean(TotalMinutesAsleep) > 480 ~ "Over Sleeper",
+),levels=c("Bad Sleeper", "Normal Sleeper", "Over Sleeper")))
+```
+
+
+
+
+
+
+In Graph Format,
+```R
+daily_activity_sleep %>%
+group_by(Id) %>% 
+summarize(AverageActiveMinutes=mean(VeryActiveMinutes), 
+AverageFairlyActiveMinutes=mean(FairlyActiveMinutes),
+AverageLightlyActiveMinutes=mean(LightlyActiveMinutes),
+AverageSedentaryMinutes=mean(SedentaryMinutes),
+PercentSedentary=(AverageSedentaryMinutes/(AverageActiveMinutes+AverageFairlyActiveMinutes+AverageLightlyActiveMinutes+AverageSedentaryMinutes))*100,
+AverageSleepTime=mean(TotalMinutesAsleep)) %>%
+ggplot(aes(x=PercentSedentary, y=AverageSleepTime)) + geom_point()+geom_smooth(formula = y ~ x, method = "loess")+
+geom_rect(aes(xmin = min(as.integer(PercentSedentary)), 
+                xmax = max(as.integer(PercentSedentary)), 
+                ymin = min(AverageSleepTime), 
+                ymax = 420), fill="red", alpha=0.005)+
+geom_rect(aes(xmin = min(as.integer(PercentSedentary)), 
+                xmax = max(as.integer(PercentSedentary)), 
+                ymin = 480, 
+                ymax = max(AverageSleepTime)), fill="red", alpha=0.005)
+```
+
+![image](https://user-images.githubusercontent.com/70426064/137298167-7ee71337-97d9-45c6-a7c1-ca5ba2d8ad4e.png)
+
+
+> Red boxes on this graph show under sleep (<420 mins) and over sleep (>480 mins) portions.<br/><br/>From this graph, we can deduce that individuals who are less sedentary (lower percentage of sedentary time) are in normal sleeping (≥=420mins & ≤480mins) range.<br/><br/>Reminders should encourage users to adhere to the normal sleeping range to attain a healthier lifestyle.
+
+
+### 5. Share: Conclusions/Trends derived ###
+
+1. Users are more active on days except Thursday. 
+2. Users are most active from 5-7pm daily. 
+3. For the distance range of >5.2 miles, intensity of the steps, such as taking bigger strides matters more than the amount of steps. 
+4. Individuals who are less sedentary are in normal sleeping (≥=420mins & ≤480mins) range.
+
+
+
+### 6. Act: Proposed Marketing Strategies ###
+
+1. Marketing Ads should be focused on days except Thursdays.
+2. Reminders on health gadgets should be more frequent from 5-7pm.
+3. Reminders when users are walking distances greater than 5.2 miles should involve tips on increasing intensity instead of increasing distance.
+4. Reminders should encourage users to sleep within ≥=420mins & ≤480mins to become lead a less sedentary lifestyle.
+
+
+
