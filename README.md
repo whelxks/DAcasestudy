@@ -77,6 +77,33 @@ janitor ⇒ Data Cleaning
 ```
 
 
+* import and load the downloaded dataset
+```R
+hourly_calories <- read.csv('/cloud/project/Fitabase Data 4.12.16-5.12.16/hourlyCalories_merged.csv')
+hourly_intensities <- read.csv('/cloud/project/Fitabase Data 4.12.16-5.12.16/hourlyIntensities_merged.csv')
+hourly_steps <- read.csv('/cloud/project/Fitabase Data 4.12.16-5.12.16/hourlySteps_merged.csv')
+
+
+daily_activity <- read_csv("/cloud/project/Fitabase Data 4.12.16-5.12.16/dailyActivity_merged.csv")
+daily_calories <- read.csv("/cloud/project/Fitabase Data 4.12.16-5.12.16/dailyCalories_merged.csv")
+daily_intensities <- read.csv("/cloud/project/Fitabase Data 4.12.16-5.12.16/dailyIntensities_merged.csv")
+daily_steps <- read.csv("/cloud/project/Fitabase Data 4.12.16-5.12.16/dailySteps_merged.csv")
+
+
+sleep_day <- read_csv("/cloud/project/Fitabase Data 4.12.16-5.12.16/sleepDay_merged.csv")
+weight_log <- read_csv("/cloud/project/Fitabase Data 4.12.16-5.12.16/weightLogInfo_merged.csv")
+```
+
+
+* quick glimpse of data: check for errors
+```R
+head()
+colnames() 
+all.equal() => Equality Test Between Two Data Tables
+is.null() => inspect whether data object is null
+anyNA()
+```
+  * inspect hourly data 
 
 
 
