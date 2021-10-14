@@ -11,7 +11,10 @@
 * Business goals: Bellabeat aims to become a larger player in the global **smart device** market. By analyzing smart device fitness data, we could potentially unlock new growth opportunities for the company.
 
 ## Data analysis process (6 steps): ##
-1. Ask
+```
+@@ 1. Ask @@
+
+```
 * Identify the business task
 I have been asked to analyze smart device data (data collected on activity, sleep, stress, and reproductive health). 
 This helps me to gain insight into how consumers are using their smart devices (consumer's health status and habits) by making predictions and searching for trends and patterns.
@@ -23,6 +26,7 @@ Using this information, I will then craft high-level recommendations for how the
     
 
 2. Prepare 
+
 I will be using the public data from [FitBit Fitness Tracker Data](https://www.kaggle.com/arashnic/fitbit). There are 15 csv files downloaded.
 
 ```diff
