@@ -12,7 +12,7 @@
 
 ## Data analysis process (6 steps): ##
 
-1. Ask
+### 1. Ask ###
 
 * Identify the business task
 I have been asked to analyze smart device data (data collected on activity, sleep, stress, and reproductive health). 
@@ -24,7 +24,7 @@ Using this information, I will then craft high-level recommendations for how the
   * Secondary Stakeholder: Bellabeat marketing analytics team.
     
 
-2. Prepare 
+### 2. Prepare ###
 
 I will be using the public data from [FitBit Fitness Tracker Data](https://www.kaggle.com/arashnic/fitbit). There are 15 csv files downloaded.
 
@@ -54,6 +54,16 @@ Let's determine the credibility of the data through an ROCCC Analysis.
 
 **Conclusion:** 
 - Would not use this dataset to advise for business decisions/directions. Instead, analysis using this dataset should be treated as a prediction/intuition of a trend. The trend should be further verified through a more reliable and credible dataset.
+
+### 3. Process ###
+
+I will be using RStudio to perform the analysis and generate visualisations to identify trends.
+
+* install the required R packages: 
+```R
+install.packages() & library()
+```
+
 
 
 ```diff
